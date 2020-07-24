@@ -1,0 +1,58 @@
+    <h2>User info</h2>
+	<%= attachment_image_tag user, :profile_image, :fill, 100, 100, format: 'jpeg', fallback: "no_image.jpg" %>
+
+	<table class="table">
+		<tr>
+			<td>name</td>
+			<td><%= user.name %></td>
+	    </tr>
+	    <tr>
+	    	<td>introduction</td>
+	    	<td><%= user.introduction %></td>
+	    </tr>
+	    <tr>
+			<th>follows</th>
+			<th><%= link_to "#{user.follower.count}", follows_user_path(user) %></th>
+		</tr>
+
+		<tr>
+			<th>followers</th>
+			<th><%= link_to "#{user.followed.count}", followers_user_path(user) %></th>
+		</tr>
+	</table>
+	<% if user == current_user %>
+		<div class="row">
+			<%= link_to "",edit_user_path(user.id),class: "col-xs-12 btn btn-default glyphicon glyphicon-wrench" %>
+		</div>
+	<% else %>
+		<div class="row">
+      <% if current_user.following?(user) %>
+        <%= link_to 'フォロー外す', unfollow_path(user.id), method: :POST, class: "col-xs-6 btn btn-primary" %>
+      <% else %>
+        <%= link_to 'フォローする', follow_path(user.id), method: :POST, class: "col-xs-6 btn btn-success" %>
+      <% end %>
+    </div>
+	 <% end %>
+		
+	<h2>New book</h2>
+	<%= form_for(book_new) do |f| %>
+		<% if book_new.errors.any? %>
+	      <div id="error_explanation" class="alert alert-danger">
+		  	errors
+		    <ul>
+		      <% book_new.errors.full_messages.each do |message| %>
+		        <li><%= message %></li>
+		      <% end %>
+		    </ul>
+		  </div>
+		<% end %>
+		<div>
+			<%= f.label :title, "Title" %>
+			<%= f.text_field :title, class: "col-xs-12" %>
+		</div>
+		<div>
+			<%= f.label :body, "Opinion" %>
+			<%= f.text_field :body, class: "col-xs-12" %>
+    </div>
+		<%= f.submit 'Create Book',class: "btn btn-primary col-xs-12" %>
+	<% end %>
